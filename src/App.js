@@ -7,7 +7,7 @@ import { Grid } from "react-loader-spinner"
 import "./App.css"
 import contractABI from "./utils/WavePortal.abi.json"
 
-const contractAddress = "0xd5f08a0ae197482FA808cE84E00E97d940dBD26E" // on rinkeby
+const contractAddress = "0x59FcF27A2C83e0382fC0b93C9ED6C301B5a5ff42" // on rinkeby
 
 export default function App() {
   const [wallet, setWallet] = useState()
