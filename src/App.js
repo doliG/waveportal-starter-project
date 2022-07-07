@@ -3,18 +3,23 @@ import * as React from "react"
 import { useState } from "react"
 import { useEffect } from "react"
 import { Grid } from "react-loader-spinner"
-// import { ethers } from "ethers";
+import dayjs from "dayjs"
+import relativeTime from "dayjs/plugin/relativeTime"
 import "./App.css"
 import contractABI from "./utils/WavePortal.abi.json"
 
+dayjs.extend(relativeTime)
+
 const contractAddress = "0x59FcF27A2C83e0382fC0b93C9ED6C301B5a5ff42" // on rinkeby
+const formatAddress = addr =>
+  addr.substring(0, 5) + "..." + addr.substring(38, 42)
 
 export default function App() {
   const [wallet, setWallet] = useState()
   const [waveCount, setWaveCount] = useState()
   const [waves, setWaves] = useState([])
   const [status, setStatus] = useState("ready") // 'ready' -> 'approving' -> 'mining' -> 'ready' || 'error'
-  const [message, setMessage] = useState()
+  const [message, setMessage] = useState("hey yome, I love you!")
 
   const wave = async () => {
     try {
@@ -124,28 +129,38 @@ export default function App() {
   return (
     <div className="mainContainer">
       <div className="dataContainer">
-        <div className="header">Hey there!</div>
+        <h1 className="">
+          <span className="nes-text is-primary">#</span> Hello 🚀
+        </h1>
 
-        <div className="bio">
-          I am yome and I worked on web2 so that's pretty cool right? Connect
-          your Ethereum wallet and wave at me!
+        <div className="">
+          I am <span className="nes-text is-primary">yome</span> and I worked on
+          web2 so that's pretty cool right? Connect your Ethereum wallet and
+          wave at me!
         </div>
 
         {wallet ? (
-          <pre>Connected with address {JSON.stringify(wallet, null, 2)}</pre>
+          <div className="nes-badge login">
+            <span className="is-dark">{formatAddress(wallet)}</span>
+          </div>
         ) : (
-          <button className="waveButton" onClick={connectWallet}>
+          <button className="nes-btn login" onClick={connectWallet}>
             Connect wallet
           </button>
         )}
 
         {wallet && (
-          <>
-            <textarea onChange={e => setMessage(e.target.value)}>
+          <div>
+            <br />
+            <label>Your message</label>
+            <textarea
+              className="nes-textarea"
+              onChange={e => setMessage(e.target.value)}
+            >
               {message}
             </textarea>
             <button
-              className="waveButton"
+              className={`nes-btn ${status === "ready" && "is-primary"}`}
               onClick={wave}
               disabled={status !== "ready"}
             >
@@ -163,22 +178,23 @@ export default function App() {
                 </div>
               )}
             </button>
-          </>
+          </div>
         )}
 
-        <div className="bio">Total waves: {waveCount}</div>
+        <br />
+        <br />
+        <h3 className="bio">
+          <span className="nes-text is-primary">#</span> They already waved (
+          {waveCount})
+        </h3>
+
         {waves.map((wave, index) => (
-          <div
-            key={index}
-            style={{
-              backgroundColor: "OldLace",
-              marginTop: "16px",
-              padding: "8px",
-            }}
-          >
-            <div>Address: {wave.waver}</div>
-            <div>Time: {wave.date.toString()}</div>
-            <div>Message: {wave.message}</div>
+          <div key={index} className="nes-container with-title is-rounded wave">
+            <p class="title">
+              <span title={wave.waver}>{formatAddress(wave.waver)}</span>{" "}
+              <span title={wave.date}>{dayjs(wave.date).fromNow()}</span>
+            </p>
+            <p>{wave.message}</p>
           </div>
         ))}
       </div>
